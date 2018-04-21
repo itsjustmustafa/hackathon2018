@@ -12,6 +12,8 @@ function SortGroup(responses, people_per_group) {
     var modifier = 1;
     var i = 0;
     while (responses.length > 0) {
+
+        //Find which student is the best fit
         var max_index = 0;
         var max_val = 0;
         for (j = 0; j < responses.length; j++) {
@@ -21,17 +23,23 @@ function SortGroup(responses, people_per_group) {
                 max_val = sum;
             }
         }
-        //Get responses[j]
+
+        //Add the response to the group, remove the response from the general pool 
         groups[i].push(responses[max_index]);
         responses.splice(max_index,1); 
+
+        
+        //This makes our values cycle, e.g:  0,1,2,3,2,1,0,1,2,3
         if (i + modifier === people_per_group | i + modifier === -1 ) {
             modifier *= -1;
         }
         i += modifier;
         console.log(i);
     }
+    console.log("EXITED");
 }
 
+//Mazza makes this
 function GetValue_WhenPerson_added_to_Group_Hypothetically(group, response) {
     return 0;
 }
