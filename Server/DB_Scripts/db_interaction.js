@@ -93,7 +93,7 @@ module.exports  = {
         console.log(err.message);
       }
     });
-
+    console.log(formRow);
     let questionSql = `SELECT questionID questionid, questionType questiontype, questionMaxVal FROM questions WHERE formID = ?`;
     db.each(questionSql, [formRow], (err, questionRow) => {
       if (err) {

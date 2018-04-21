@@ -21,7 +21,7 @@ function PostToServer(content) {
   }
   request.open(method, url, true);
   request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-  request.send("content");
+  request.send(content);
 }
 
 submitForm = function (event) {
