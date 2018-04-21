@@ -13,7 +13,7 @@ let session;
 }
 function PostToServer (content)
 {
-  var url = "http://127.0.0.1";
+  var url = "http://127.0.0.1:8081";
   var method = "POST"
   var request = new XMLHttpRequest(); 
   request.onload = function () {
@@ -21,8 +21,8 @@ function PostToServer (content)
     var data = request.responseText; 
  }
  request.open(method,url,true);
- request.setRequestHeader("Content-Type","text/plain;charset=UTF-8");
- request.send(content);
+ request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+ request.send("value=" + content);
 }
 
 submitForm = function(event){
@@ -44,16 +44,16 @@ submitForm = function(event){
     var checkBoxFour = (Number(document.getElementById("questions").getElementsByClassName('checkBox')[0].getElementsByTagName("input")[3].checked));
     var checkBoxFive = (Number(document.getElementById("questions").getElementsByClassName('checkBox')[0].getElementsByTagName("input")[4].checked));
 
-    var checkboxComplete = (checkBoxOne + ", " + checkBoxTwo + ", " + checkBoxThree + ", " + checkBoxFour + ", " + checkBoxFive)
+    var checkboxComplete = (checkBoxOne + "," + checkBoxTwo + "," + checkBoxThree + "," + checkBoxFour + "," + checkBoxFive)
 
     var completeForm = (studID + "," + radBut + "," + sliderValue + "," + checkboxComplete);
     var completeForm_Object = {
       studID,radBut,sliderValue,checkboxComplete
     }
-
+    var completeForm = (studID + "," + radBut + "," + sliderValue + "," + checkboxComplete);
     PostToServer(completeForm);
 
-    var completeForm = (studID + ", " + radBut + ", " + sliderValue + ", " + checkboxComplete);
+   
     //this is the final result - turn to a http posts
     console.log(completeForm);
 }
