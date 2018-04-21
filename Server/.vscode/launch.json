@@ -7,6 +7,12 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Generator_Sample",
+            "program": "${workspaceFolder}/Generator/generator_sample.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Algorithmn",
             "program": "${workspaceFolder}/algorithmn.js"
         },

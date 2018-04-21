@@ -1,9 +1,10 @@
 var http = require("http");
 var file_retriever = require("./Server_Scripts/file_retriever");
 var url = require('url');
+var database = require("./DB_Scripts/db_interaction");
 var public_folder = 'public';
-var default_file = "/index.html"
-var err_page = "/404.html"
+var default_file = "/index.html";
+var err_page = "/404.html";
 
 http.createServer(function (request, response) {
     if (request.method === "GET") {
@@ -25,9 +26,12 @@ http.createServer(function (request, response) {
         var body = '';
         request.on('data', function (data) {
             body += data;
+           
             console.log("Partial body: " + body);
         });
         request.on('end', function () {
+            
+            database.add_Response(body);
             console.log("Body: " + body);
         });
         var default_filename = public_folder + "/" + "404.html";
