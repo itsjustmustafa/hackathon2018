@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> -->
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+    <div id="questions">
+        <p>Do you like web development?</p>
+        <div class="radioButton">
+            <input type="radio" id="yes" value="Yes" v-model="yesOrNo">
+            <label for="yes">Yes</label>
+            <input type="radio" id="no" value="No" v-model="yesOrNo">
+            <label for="no">No</label>
+        </div>
+
+        <p>How confident are you at Python?</p>
+        <div class="slider">
+            <input type="range" min="0" max="10" value="5" class="slider" id="pythonSlider">
+        </div>
+
+        <p>Which of these languages do you know?</p>
+        <div class="checkBox">
+            <input type="checkbox" id="checkOne" value="CheckOne" v-model="checkedAnswers">
+            <label for="checkOne">Python</label>
+            <input type="checkbox" id="checkTwo" value="CheckTwo" v-model="checkedAnswers">
+            <label for="checkOne">Java</label>
+            <input type="checkbox" id="checkThree" value="CheckThree" v-model="checkedAnswers">
+            <label for="checkOne">JavaScript</label>
+            <input type="checkbox" id="checkFour" value="CheckFour" v-model="checkedAnswers">
+            <label for="checkOne">C#</label>
+            <input type="checkbox" id="checkFive" value="CheckFive" v-model="checkedAnswers">
+            <label for="checkOne">C++</label>
+            <!--<p>Answers checked: {{ checkedAnswers }}</p> -->
+        </div>
+
+        <div class="submitButton">
+            <button type="submit">
+                <slot>Submit</slot>
+            </button>
+        </div>
+
+    </div>
+    <script src="js/script.js"></script>
+            
+            
+</body>
+</html>
