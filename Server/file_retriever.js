@@ -12,8 +12,6 @@ function ReadFile_Or_Text(filename, text, response) {
 }
 
 module.exports = {
-    
-
     ReadFile_OR_DefaultFile_OR_Text(Requested_Filename, Default_Filename, response) {
         fs.readFile(Requested_Filename, function (err, data) {
             if (err) {
