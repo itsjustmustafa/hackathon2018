@@ -1,19 +1,27 @@
-var mysql = require(`db_connect.js`)
+const sqlite3 = require('sqlite3').verbose();
+
+let db = new sqlite3.Database('../hackathon.db', sqlite3.OPEN_READWRITE, (err) => {
+  if (err) {
+    console.error(err.message);
+  }else{
+    console.log('Connected to the database.');
+  }
+});
 
 function addForm(formName, formPath, formPass){
 
-  let sql = `INSERT INTO forms(formName, formPath, formPass) VALUES(?), (?), (?)`;
+  let sql = `INSERT INTO forms(formName, formPath, formPass) VALUES(?, ?, ?)`;
   let params = [formName, formPath, formPass];
   db.run(sql, params, function(err){
     if(err){
-      console.log(`Failed insert!`);
+      console.log(err.message);
     }
   });
 
 }
 
 function addQuestion(formName, questionID){
-  let sql = `INSERT INTO questions(formID, questionFormID) VALUES(?), (?)`;
+  let sql = `INSERT INTO questions(formID, questionFormID) VALUES(?, ?)`;
   let formSql = `SELECT formID FROM forms WHERE formName = ?`
   db.get(formSql, [formName], (err, row) =>{
     if(err){
@@ -63,22 +71,22 @@ function addQuestion(formName, questionID){
     });
 
     if(questionRow.questiontype == `SCALE`){
-      let resSql = `INSERT INTO response(questionID, studentID, responseScale) VALUES(?), (?), (?)`;
-      db.run(resSql, [questionRow.questionid, studentID, response] function(err){
+      let resSql = `INSERT INTO response(questionID, studentID, responseScale) VALUES(?, ?, ?)`;
+      db.run(resSql, [questionRow.questionid, studentID, response], function(err){
         if(err){
           console.log(`Failed Insert!`);
         }
       });
     }else if(questionRow.questiontype == `BOOL`){
-      let resSql = `INSERT INTO response(questionID, studentID, responseBool) VALUES(?), (?), (?)`;
-      db.run(resSql, [questionRow.questionid, studentID, response] function(err){
+      let resSql = `INSERT INTO response(questionID, studentID, responseBool) VALUES(?, ?, ?)`;
+      db.run(resSql, [questionRow.questionid, studentID, response], function(err){
         if(err){
           console.log(`Failed Insert!`);
         }
       });
     }else{
-      let resSql = `INSERT INTO response(questionID, studentID, responseMultiBool) VALUES(?), (?), (?)`;
-      db.run(resSql, [questionRow.questionid, studentID, response] function(err){
+      let resSql = `INSERT INTO response(questionID, studentID, responseMultiBool) VALUES(?, ?, ?)`;
+      db.run(resSql, [questionRow.questionid, studentID, response], function(err){
         if(err){
           console.log(`Failed Insert!`);
         }
@@ -111,7 +119,7 @@ function addQuestion(formName, questionID){
                     FROM responses
                     JOIN questions ON responses.questionID = questions.questionID
                     JOIN forms ON questions.formID = forms.formID
-                    WHERE forms.formName = (?)
+                    WHERE forms.formName = ?
                     ORDER BY studentID
                     AND questions.questionFormID`;
 
@@ -141,3 +149,10 @@ function addQuestion(formName, questionID){
     return responses;
   }
 }
+
+db.close((err) => {
+  if (err) {
+    console.error(err.message);
+  }
+  console.log('Close the database connection.');
+});
