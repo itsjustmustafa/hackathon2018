@@ -114,7 +114,11 @@ module.exports  = {
         let resSql = `INSERT INTO responses(questionID, studentID, responseMultiBool) VALUES(?, ?, ?)`;
         let fullResponse = ``;
         for(var i = resLoc; i < resLoc + questionRow.questionMaxVal; i++){
-          fullResponse += response[i].toString() + `,`;
+          if(i != resLoc + questionRow.questionMaxVal - 1){
+            fullResponse += response[i].toString() + `,`;
+          }else{
+            fullResponse += response[i].toString();
+          }
         }
 
         db.run(resSql, [questionRow.questionid, studentID, fullResponse], function (err) {
