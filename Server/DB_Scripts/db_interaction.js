@@ -81,28 +81,21 @@ module.exports  = {
       if (err) {
         console.log(err.message);
       }
-      if (stuRow != studentID) {
+      else if (stuRow != studentID) {
         this.addStudent(studentID);
       }
     });
 
-    let formSql = `SELECT formID FROM forms WHERE formName = ?`;
-    
-    var formRow = db.get(formSql, [formName], (err, formRow_inner) => {
-      if (err) {
-        console.log(err.message);
-        return;
-      }
-      return formRow_inner;
-    });
-    console.log('row' + formRow);
-    let questionSql = `SELECT questionID questionid, questionType questiontype, questionMaxVal FROM questions WHERE formID = ?`;
-    db.each(questionSql, [formRow], (err, questionRow) => {
+    let questionSql = `SELECT questionID questionid, questionType questiontype, questionMaxVal 
+                         FROM questions
+                         JOIN forms ON questions.formID = forms.formID
+                         WHERE formName = ?`;
+    db.each(questionSql, [formName], (err, questionRow) => {
       if (err) {
         console.log(err.message);
       }
       else if (questionRow.questiontype == `SCALE`) {
-        let resSql = `INSERT INTO response(questionID, studentID, responseScale) VALUES(?, ?, ?)`;
+        let resSql = `INSERT INTO responses(questionID, studentID, responseScale) VALUES(?, ?, ?)`;
         db.run(resSql, [questionRow.questionid, studentID, response[resLoc]], function (err) {
           if (err) {
             console.log(err.message);
@@ -110,7 +103,7 @@ module.exports  = {
         });
         resLoc += 1;
       } else if (questionRow.questiontype == `BOOL`) {
-        let resSql = `INSERT INTO response(questionID, studentID, responseBool) VALUES(?, ?, ?)`;
+        let resSql = `INSERT INTO responses(questionID, studentID, responseBool) VALUES(?, ?, ?)`;
         db.run(resSql, [questionRow.questionid, studentID, response[resLoc]], function (err) {
           if (err) {
             console.log(err.message);
@@ -118,7 +111,7 @@ module.exports  = {
         });
         resLoc += 1;
       } else {
-        let resSql = `INSERT INTO response(questionID, studentID, responseMultiBool) VALUES(?, ?, ?)`;
+        let resSql = `INSERT INTO responses(questionID, studentID, responseMultiBool) VALUES(?, ?, ?)`;
         let multiResponse = [];
         for(var i = resLoc; i < resLoc + questionRow.questionMaxVal; i++){
           multiResponse.push(response[i])
