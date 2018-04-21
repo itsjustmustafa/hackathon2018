@@ -30,7 +30,7 @@ function ReadFile_OR_DefaultFile_OR_Text(Requested_Filename, Default_Filename, r
 
 http.createServer(function (request, response) {
     response.writeHead(200, { 'Content-Type': 'text/plain' });
-    var requested_filename = "Server/public" + request.url;
+    var requested_filename = "public" + request.url;
     
     response = ReadFile_OR_DefaultFile_OR_Text(requested_filename,"404.html",response);
 }).listen(8081);
