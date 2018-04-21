@@ -1,9 +1,9 @@
 
-function SortGroup(responses, people_per_group) {
+function SortGroup(responses, num_of_groups, schema) {
     var groups = new Array();
 
     //Create default for group
-    for (i = 0; i < people_per_group; i++) {
+    for (i = 0; i < num_of_groups; i++) {
         groups[i] = new Array();
         val = responses.pop()
         groups[i].push(val);
@@ -17,7 +17,7 @@ function SortGroup(responses, people_per_group) {
         var max_index = 0;
         var max_val = 0;
         for (j = 0; j < responses.length; j++) {
-            var sum = GetValue_WhenPerson_added_to_Group_Hypothetically(groups[j], responses[j]);
+            var sum = GetValue_WhenPerson_added_to_Group_Hypothetically(groups[i], responses[j],schema);
             if (sum > max_val) {
                 max_index = j;
                 max_val = sum;
@@ -30,11 +30,14 @@ function SortGroup(responses, people_per_group) {
 
         
         //This makes our values cycle, e.g:  0,1,2,3,2,1,0,1,2,3
-        if (i + modifier === people_per_group | i + modifier === -1 ) {
+        if (i + modifier === num_of_groups | i + modifier === -1 ) {
             modifier *= -1;
+        } else {
+            i += modifier;
         }
-        i += modifier;
         console.log(i);
+        
+        
     }
     console.log("EXITED");
 }
@@ -74,13 +77,17 @@ response_array_fortesting.push(response_1);
 response_array_fortesting.push(response_1);
 response_array_fortesting.push(response_1);
 response_array_fortesting.push(response_1);
-response_array_fortesting.push(response_1);
-response_array_fortesting.push(response_1);
-response_array_fortesting.push(response_1);
-response_array_fortesting.push(response_1);
-response_array_fortesting.push(response_1);
-response_array_fortesting.push(response_1);
-response_array_fortesting.push(response_1);
-
+response_array_fortesting.push(response_3);
+response_array_fortesting.push(response_3);
+response_array_fortesting.push(response_3);
+response_array_fortesting.push(response_3);
+response_array_fortesting.push(response_3);
+response_array_fortesting.push(response_3);
+response_array_fortesting.push(response_3);
+response_array_fortesting.push(response_3);
+response_array_fortesting.push(response_3);
+response_array_fortesting.push(response_3);
+response_array_fortesting.push(response_3);
+response_array_fortesting.push(response_3);
 SortGroup(response_array_fortesting,4);
 
