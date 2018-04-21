@@ -33,8 +33,8 @@ submitForm = function (event) {
 
   response = "";
   for (i = 0; i < AllQuestions.length; i++) {
-    answer_node = AllQuestions[i].childNodes[2];
-    question_type = AllQuestions[i].childNodes[2].className;
+    answer_node = AllQuestions[i].childNodes[1];
+    question_type = AllQuestions[i].childNodes[1].className;
     
     if (question_type === "radioButton") {
       if (Number(answer_node.getElementsByTagName("input")[0].checked) == 1) {
