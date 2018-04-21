@@ -33,5 +33,6 @@ submitForm = function(event){
 
     var completeForm = (studID + ", " + radBut + ", " + sliderValue + ", " + checkboxComplete);
     
+    //this is the final result - turn to a http posts
     console.log(completeForm);
 }
