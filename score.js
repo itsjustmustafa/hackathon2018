@@ -1,51 +1,50 @@
-function score(group_stats, student, schema){
-    tot_score = 0;
-    //schema[n][0] is question n
-    //schema[n][1] is is_bal for
-    //schema[n][2] is max_val for
+module.exports = {
+    score(group_stats, student, schema) {
+        tot_score = 0;
+        //schema[n][0] is question n
+        //schema[n][1] is is_bal for
+        //schema[n][2] is max_val for
 
-    for(let i = 0; i < schema.length; i++){
-        let expected;
-        norm_val = student.responses[i]/schema[i][2];
-        // //console.log(norm_val);
-        if(schema[i][1] == true){
-            if(schema[i][2] == 1){
-                expected = Math.round(1 - group_stats[i]);
-            }else{
-                expected = 1 - group_stats[i];
+        for (let i = 0; i < schema.length; i++) {
+            let expected;
+            norm_val = student.responses[i] / schema[i][2];
+            // //console.log(norm_val);
+            if (schema[i][1] == true) {
+                if (schema[i][2] == 1) {
+                    expected = Math.round(1 - group_stats[i]);
+                } else {
+                    expected = 1 - group_stats[i];
+                }
+                tot_score += 1 - Math.abs(expected - norm_val);
+
+            } else if (schema[i][1] == false) {
+                if (schema[i][2] == 1) {
+                    expected = Math.round(group_stats[i]);
+                } else {
+                    expected = group_stats[i];
+                }
+                tot_score += Math.abs(expected - norm_val);
             }
-            tot_score += 1 - Math.abs(expected - norm_val);
+        }
+        return (tot_score);
+    },
+    get_group_stats(student_group, schema) {
+        group_stats = [];
+        //schema[n][0] is question n
+        //schema[n][1] is is_bal for
+        //schema[n][2] is max_val for
 
-        }else if(schema[i][1] == false){
-            if(schema[i][2] == 1){
-                expected = Math.round(group_stats[i]);
-            }else{
-                expected = group_stats[i];
+        for (let i = 0; i < schema.length; i++) {
+            group_stats[i] = 0;
+            for (let j = 0; j < student_group.length; j++) {
+                //console.log(student_group);
+                group_stats[i] += student_group[j].responses[i];
             }
-            tot_score += Math.abs(expected - norm_val);           
+            group_stats[i] = group_stats[i] / (student_group.length * schema[i][2]);
         }
+        // //console.log("got stats!");
+        return (group_stats)
     }
-
-    return(tot_score);
-
-}
-
-function get_group_stats(student_group, schema){
-    group_stats = [];
-    //schema[n][0] is question n
-    //schema[n][1] is is_bal for
-    //schema[n][2] is max_val for
-
-    for(let i = 0; i<schema.length; i++){
-        group_stats[i] = 0;
-        for(let j = 0; j<student_group.length; j++){
-            //console.log(student_group);
-            group_stats[i] += student_group[j].responses[i];
-        }
-        group_stats[i] = group_stats[i]/(student_group.length * schema[i][2]);
-    }
-    // //console.log("got stats!");
-    return(group_stats)
 }
 /*
 schema = [
