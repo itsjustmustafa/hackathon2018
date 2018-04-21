@@ -1,5 +1,5 @@
 var http = require("http");
-var file_retriever = require("./file_retriever");
+var file_retriever = require("./Server_Scripts/file_retriever");
 var url = require('url');
 var public_folder = 'public';
 var default_file = "/index.html"
