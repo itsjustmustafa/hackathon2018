@@ -1,0 +1,3 @@
+cd Generator
+node generator_sample
+PAUSE

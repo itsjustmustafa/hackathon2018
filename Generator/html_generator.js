@@ -42,9 +42,9 @@ function Create_Section_For_Question(question) {
 module.exports = {
     //In goes a schema, out comes a HTML
     generate(json) {
-        var top_page = fs.readFileSync("top_template.html", "utf8");
-        var bot_page = fs.readFileSync("bot_template.html", "utf8");
-        var mid_page;
+        var top_page = fs.readFileSync("output_template/output_top.html", "utf8");
+        var bot_page = fs.readFileSync("output_template/output_bot.html", "utf8");
+        var mid_page ="";
 
         for (i = 0; i < json.Questions.length; i++) {
             var middle = Create_Section_For_Question(json.Questions[i]);
@@ -53,7 +53,7 @@ module.exports = {
 
         var full_page = top_page + mid_page + bot_page;
         return full_page;
-        fs.writeFile("generated.html", full_page, function (err) {
+        fs.writeFile("../Server/public/surveys/generated.html", full_page, function (err) {
             if (err) {
                 return console.log(err);
             }
