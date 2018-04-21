@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> -->
+    <script src="https://unpkg.com/vue"></script>
+    <script src="js/scripts.js"></script>
+</head>
+<body onload="main()">
+    <div id="questions">
+        <form>
+        <p>Enter your student number:</p>
+        <div class="studentNumber">
+            <input v-model="studentID" value="studentID">
+         <p>Message is: {{ studentID }}</p>
+        </div>
+
+        <p>Do you like web development?</p>
+        <div class="radioButton question">
+            <input type="radio" class="yes" value="Yes" v-model="yesOrNo">
+            <label for="yes">Yes</label>
+            <input type="radio" class="no" value="No" v-model="yesOrNo">
+            <label for="no">No</label>
+        </div>
+
+        <p>How confident are you at Python?</p>
+        <div class="slider question">
+            <input type="range" min="0" max="10" value="5" class="slider" id="pythonSlider">
+        </div>
+
+        <p>Which of these languages do you know?</p>
+        <div class="checkBox question">
+            <input type="checkbox" id="checkOne" value="CheckOne" v-model="checkedResponses">
+            <label for="checkOne">Python</label>
+            <input type="checkbox" id="checkTwo" value="CheckTwo" v-model="checkedResponses">
+            <label for="checkOne">Java</label>
+            <input type="checkbox" id="checkThree" value="CheckThree" v-model="checkedResponses">
+            <label for="checkOne">JavaScript</label>
+            <input type="checkbox" id="checkFour" value="CheckFour" v-model="checkedResponses">
+            <label for="checkOne">C#</label>
+            <input type="checkbox" id="checkFive" value="CheckFive" v-model="checkedResponses">
+            <label for="checkOne">C++</label>
+            <!--<p>Answers checked: {{ checkedResponses }}</p> -->
+        </div>
+
+        <button type="button" onclick="submitForm()">Submit</button>
+    </form>
+    </div>
+    <script src="js/vueFunctions.js"></script>           
+</body>
+</html>
