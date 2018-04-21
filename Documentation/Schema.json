@@ -9,7 +9,7 @@
     {
       "Id": 0,
       "Question": "This text is displayed to the user",
-      "Magnitude": 1,
+      "Priority": 1,
       "Responses": [
         0,
         1,
@@ -28,7 +28,7 @@
     {
       "Id": 1,
       "Question": "Can you work in a team",
-      "Magnitude": 1,
+      "Priority": 1,
       "Responses": [
         "Yes",
         "No"
@@ -40,7 +40,7 @@
     {
       "Id": 2,
       "Question": "Which languages do you know",
-      "Magnitude": 1,
+      "Priority": 1,
       "Responses": [
         "C++",
         "Java",
