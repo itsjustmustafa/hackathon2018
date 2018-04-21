@@ -89,15 +89,31 @@ function addQuestion(formName, questionID){
   function getResponseData(formName){
 
     var tempRes = [];
+    var questionArray = [];
     var responses = [];
     var lastStudentID = -1;
+
+    let questionSql = `SELECT questionFormID, questionBal, questionMaxVal
+                        FROM questions
+                        JOIN forms ON questions.formID = forms.formID
+                        WHERE formName = ?`
+
+    db.each(questionSql, [formName], (err, questionRows) =>{
+      if(err){
+        console.log(`Failed getting questions!`);
+      }else{
+        let arrayIn = [questionRows.questionFormID, questionRows.questionBal, questionRows.questionMaxVal];
+        questionArray.push(arrayIn);
+      }
+    });
 
     let formSql = `SELECT studentID, questionType, responseScale, responseBool, responseMultiBool
                     FROM responses
                     JOIN questions ON responses.questionID = questions.questionID
                     JOIN forms ON questions.formID = forms.formID
                     WHERE forms.formName = (?)
-                    ORDER BY questions.questionFormID`;
+                    ORDER BY studentID
+                    AND questions.questionFormID`;
 
     db.each(formSql, [formName], (err, resRows)=>{
       if(err){
@@ -110,12 +126,18 @@ function addQuestion(formName, questionID){
           lastStudentID = resRows.studentID;
           responses.push(tempRes);
           tempRes = [];
-          tempRes.push
+          tempRes.push(resRows.studentID);
         }
         if(resRows.questionType == 'SCALE'){
-
+          tempRes.push(resRows.responseScale);
+        }else if(resRows.questionType == `BOOL`){
+          tempRes.push(resRows.responseBool);
+        }else if(resRows.questionType == `MULTIBOOL`){
+          tempRes.push(resRows.responseMultiBool);
         }
       }
     });
+    responses.push(questionArray);
+    return responses;
   }
 }
