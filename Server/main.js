@@ -30,7 +30,7 @@ http.createServer(function (request, response) {
             console.log("Partial body: " + body);
         });
         request.on('end', function () {
-            body = body.split(`=`)[1];
+            
             database.add_Response(body);
             console.log("Body: " + body);
         });

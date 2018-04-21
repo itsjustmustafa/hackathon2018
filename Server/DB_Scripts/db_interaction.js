@@ -87,6 +87,7 @@ module.exports  = {
     });
 
     let formSql = `SELECT formID FROM forms WHERE formName = ?`;
+    var formRow;
     db.get(formSql, [formName], (err, formRow) => {
       if (err) {
         console.log(err.message);
@@ -94,7 +95,7 @@ module.exports  = {
     });
 
     let questionSql = `SELECT questionID questionid, questionType questiontype, questionMaxVal FROM questions WHERE formID = ?`;
-    db.each(questionSql, [questionID, formRow], (err, questionRow) => {
+    db.each(questionSql, [formRow], (err, questionRow) => {
       if (err) {
         console.log(err.message);
       }
