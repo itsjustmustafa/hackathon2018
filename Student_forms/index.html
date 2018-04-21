@@ -8,14 +8,15 @@
     <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> -->
     <script src="https://unpkg.com/vue"></script>
 </head>
-<body>
+<body onload="main()">
     <div id="questions">
+        <form>
         <p>Enter your student number:</p>
         <div id="studentNumber">
             <input v-model="studentID">
          <p>Message is: {{ studentID }}</p>
         </div>
-        
+
         <p>Do you like web development?</p>
         <div class="radioButton">
             <input type="radio" id="yes" value="Yes" v-model="yesOrNo">
@@ -44,15 +45,9 @@
             <!--<p>Answers checked: {{ checkedResponses }}</p> -->
         </div>
 
-        <div class="submitButton">
-            <button type="submit">
-                <slot>Submit</slot>
-            </button>
-        </div>
-
+        <button type="submit">Submit</button>
+    </form>
     </div>
-    <script src="js/script.js"></script>
-            
-            
+    <script src="js/script.js"></script>           
 </body>
 </html>
