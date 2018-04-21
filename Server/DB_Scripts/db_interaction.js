@@ -1,9 +1,5 @@
 const sqlite3 = require('sqlite3').verbose();
 
-
-
-
-
 let db = new sqlite3.Database('././hackathon.db', sqlite3.OPEN_READWRITE, (err) => {
   if (err) {
     console.error(err.message);
@@ -48,6 +44,7 @@ function addQuestion(questionData) {
       console.log(`Failed Insert!`);
     }
   });
+}
 
   function addStudent(studentID) {
     let sql = `INSERT INTO students(studentID) VALUES(?)`;
@@ -57,72 +54,6 @@ function addQuestion(questionData) {
       }
     });
   }
-
-
-
-  function getResponseData(formName) {
-
-    var tempRes = [];
-    var questionArray = [];
-    var responses = [];
-    var lastStudentID = -1;
-
-    let questionSql = `SELECT questionFormID, questionBal, questionMaxVal
-                        FROM questions
-                        JOIN forms ON questions.formID = forms.formID
-                        WHERE formName = ?`
-
-    db.each(questionSql, [formName], (err, questionRows) => {
-      if (err) {
-        console.log(`Failed getting questions!`);
-      } else {
-        let arrayIn = [questionRows.questionFormID, questionRows.questionBal, questionRows.questionMaxVal];
-        questionArray.push(arrayIn);
-      }
-    });
-
-    let formSql = `SELECT studentID, questionType, responseScale, responseBool, responseMultiBool
-                    FROM responses
-                    JOIN questions ON responses.questionID = questions.questionID
-                    JOIN forms ON questions.formID = forms.formID
-                    WHERE forms.formName = ?
-                    ORDER BY studentID
-                    AND questions.questionFormID`;
-
-    db.each(formSql, [formName], (err, resRows) => {
-      if (err) {
-        console.log(`Failed to extract response information!`);
-      } else {
-        if (lastStudentID == -1) {
-          lastStudentID = resRows.studentID;
-        }
-        if (lastStudentID != resRows.studentID) {
-          lastStudentID = resRows.studentID;
-          responses.push(tempRes);
-          tempRes = [];
-          tempRes.push(resRows.studentID);
-        }
-        if (resRows.questionType == 'SCALE') {
-          tempRes.push(resRows.responseScale);
-        } else if (resRows.questionType == `BOOL`) {
-          tempRes.push(resRows.responseBool);
-        } else if (resRows.questionType == `MULTIBOOL`) {
-          tempRes.push(resRows.responseMultiBool);
-        }
-      }
-    });
-    responses.push(questionArray);
-    return responses;
-  }
-}
-
-db.close((err) => {
-  if (err) {
-    console.error(err.message);
-  }
-  console.log('Close the database connection.');
-});
-
 
 module.exports  = {
   addStudent(studentID) {
@@ -197,5 +128,72 @@ module.exports  = {
         resLoc += questionRow.questionMaxVal;
       }
     });
+  },
+
+  getResponseData(formName) {
+
+    var tempRes = [];
+    var questionArray = [];
+    var responses = [];
+    var lastStudentID = -1;
+    var offset = 0;
+
+    let questionSql = `SELECT questionFormID, questionBal, questionMaxVal, questionType
+                        FROM questions
+                        JOIN forms ON questions.formID = forms.formID
+                        WHERE formName = ?`
+
+    db.each(questionSql, [formName], (err, questionRows) => {
+      if (err) {
+        console.log(`Failed getting questions!`);
+      } else {
+        if(questionRows.questionType != `MULTIBOOL`){
+          let arrayIn = [questionRows.questionFormID + offset, questionRows.questionBal, questionRows.questionMaxVal];
+          questionArray.push(arrayIn);
+        }else{
+          for(var i = 0; i < questionRows.questionMaxVal; i++){
+            let arrayIn = [questionRows.questionFormID + offset + i, questionRows.questionBal, 1];
+            questionArray.push(arrayIn);
+          }
+          offset += questionRows.questionMaxVal;
+        }
+      }
+    });
+
+    let formSql = `SELECT studentID, questionType, responseScale, responseBool, responseMultiBool
+                    FROM responses
+                    JOIN questions ON responses.questionID = questions.questionID
+                    JOIN forms ON questions.formID = forms.formID
+                    WHERE forms.formName = ?
+                    ORDER BY studentID
+                    AND questions.questionFormID`;
+
+    db.each(formSql, [formName], (err, resRows) => {
+      if (err) {
+        console.log(`Failed to extract response information!`);
+      } else {
+        if (lastStudentID == -1) {
+          lastStudentID = resRows.studentID;
+        }
+        if (lastStudentID != resRows.studentID) {
+          lastStudentID = resRows.studentID;
+          responses.push(tempRes);
+          tempRes = [];
+          tempRes.push(resRows.studentID);
+        }
+        if (resRows.questionType == 'SCALE') {
+          tempRes.push(resRows.responseScale);
+        } else if (resRows.questionType == `BOOL`) {
+          tempRes.push(resRows.responseBool);
+        } else if (resRows.questionType == `MULTIBOOL`) {
+          let responseVal = resRows.split(`,`);
+          for(var i = 0; i < responseVal.length; i++){
+            tempRes.push(responseVal[i]);
+          }
+        }
+      }
+    });
+    responses.push(questionArray);
+    return responses;
   }
 }
