@@ -16,5 +16,11 @@ let session;
   }
 
   main = function(){
-    document.getElementsByClassName("question")
+    document.getElementById('questions').getElementsByTagName('button')[0].addEventListener("button", submitForm, false);
+    console.log("test");
   }
+
+submitForm = function(event){
+  // event.preventDefault();
+  console.log("hi");
+}
