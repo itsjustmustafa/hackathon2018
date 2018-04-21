@@ -60,7 +60,7 @@ module.exports  = {
     let sql = `INSERT INTO students(studentID) VALUES(?)`;
     db.run(sql, [studentID], function (err) {
       if (err) {
-        console.log(`Failed Insert!`);
+        console.log(err.message);
       }
     });
   },
@@ -87,13 +87,15 @@ module.exports  = {
     });
 
     let formSql = `SELECT formID FROM forms WHERE formName = ?`;
-    var formRow;
-    db.get(formSql, [formName], (err, formRow) => {
+    
+    var formRow = db.get(formSql, [formName], (err, formRow_inner) => {
       if (err) {
         console.log(err.message);
+        return;
       }
+      return formRow_inner;
     });
-    console.log(formRow);
+    console.log('row' + formRow);
     let questionSql = `SELECT questionID questionid, questionType questiontype, questionMaxVal FROM questions WHERE formID = ?`;
     db.each(questionSql, [formRow], (err, questionRow) => {
       if (err) {
@@ -103,7 +105,7 @@ module.exports  = {
         let resSql = `INSERT INTO response(questionID, studentID, responseScale) VALUES(?, ?, ?)`;
         db.run(resSql, [questionRow.questionid, studentID, response[resLoc]], function (err) {
           if (err) {
-            console.log(`Failed Insert!`);
+            console.log(err.message);
           }
         });
         resLoc += 1;
@@ -111,7 +113,7 @@ module.exports  = {
         let resSql = `INSERT INTO response(questionID, studentID, responseBool) VALUES(?, ?, ?)`;
         db.run(resSql, [questionRow.questionid, studentID, response[resLoc]], function (err) {
           if (err) {
-            console.log(`Failed Insert!`);
+            console.log(err.message);
           }
         });
         resLoc += 1;
@@ -123,7 +125,7 @@ module.exports  = {
         }
         db.run(resSql, [questionRow.questionid, studentID, multiResponse], function (err) {
           if (err) {
-            console.log(`Failed Insert!`);
+            console.log(err.message);
           }
         });
         resLoc += questionRow.questionMaxVal;
