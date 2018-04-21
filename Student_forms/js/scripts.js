@@ -32,7 +32,23 @@ submitForm = function(event){
     var checkboxComplete = (checkBoxOne + ", " + checkBoxTwo + ", " + checkBoxThree + ", " + checkBoxFour + ", " + checkBoxFive)
 
     var completeForm = (studID + ", " + radBut + ", " + sliderValue + ", " + checkboxComplete);
-    
     //this is the final result - turn to a http posts
     console.log(completeForm);
+}
+
+//spoof data - 100 random responses
+var randomResponses = [];
+
+for(let i = 0 ; i < 100; i++){
+    
+    randomResponses.push([
+        i + 10000000,
+        Math.floor(Math.random()* 2),
+        Math.floor(Math.random()* 10 + 1),
+        Math.floor(Math.random()* 2),
+        Math.floor(Math.random()* 2),
+        Math.floor(Math.random()* 2),
+        Math.floor(Math.random()* 2),
+        Math.floor(Math.random()* 2),   
+    ]);
 }
