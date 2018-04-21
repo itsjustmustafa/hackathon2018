@@ -138,10 +138,12 @@ module.exports  = {
 
     let splitResponse = responseData.split(`,`);
     let formName = splitResponse[0];
-    let questionID = splitResponse[1];
-    //let questionID = splitResponse[2];
-    let studentID = splitResponse[3];
-    let response = splitResponse[4];
+    let studentID = splitResponse[1];
+    let response = [];
+    for(var i = 2; i < splitResponse.length; i++){
+      response.push(splitResponse[i]);
+    }
+    let resLoc = 0;
 
     let stuCheck = `SELECT studentID FROM students WHERE studentID = ?`;
     db.get(stuCheck, [studentID], (err, stuRow) => {
@@ -160,34 +162,40 @@ module.exports  = {
       }
     });
 
-    let questionSql = `SELECT questionID questionid, questionType questiontype FROM questions WHERE formQuestionID = ? AND formID = ?`;
-    db.get(questionSql, [questionID, formRow], (err, questionRow) => {
+    let questionSql = `SELECT questionID questionid, questionType questiontype, questionMaxVal FROM questions WHERE formID = ?`;
+    db.each(questionSql, [questionID, formRow], (err, questionRow) => {
       if (err) {
         console.log(err.message);
       }
+      else if (questionRow.questiontype == `SCALE`) {
+        let resSql = `INSERT INTO response(questionID, studentID, responseScale) VALUES(?, ?, ?)`;
+        db.run(resSql, [questionRow.questionid, studentID, response[resLoc]], function (err) {
+          if (err) {
+            console.log(`Failed Insert!`);
+          }
+        });
+        resLoc += 1;
+      } else if (questionRow.questiontype == `BOOL`) {
+        let resSql = `INSERT INTO response(questionID, studentID, responseBool) VALUES(?, ?, ?)`;
+        db.run(resSql, [questionRow.questionid, studentID, response[resLoc]], function (err) {
+          if (err) {
+            console.log(`Failed Insert!`);
+          }
+        });
+        resLoc += 1;
+      } else {
+        let resSql = `INSERT INTO response(questionID, studentID, responseMultiBool) VALUES(?, ?, ?)`;
+        let multiResponse = [];
+        for(var i = resLoc; i < resLoc + questionRow.questionMaxVal; i++){
+          multiResponse.push(response[i])
+        }
+        db.run(resSql, [questionRow.questionid, studentID, multiResponse], function (err) {
+          if (err) {
+            console.log(`Failed Insert!`);
+          }
+        });
+        resLoc += questionRow.questionMaxVal;
+      }
     });
-
-    if (questionRow.questiontype == `SCALE`) {
-      let resSql = `INSERT INTO response(questionID, studentID, responseScale) VALUES(?, ?, ?)`;
-      db.run(resSql, [questionRow.questionid, studentID, response], function (err) {
-        if (err) {
-          console.log(`Failed Insert!`);
-        }
-      });
-    } else if (questionRow.questiontype == `BOOL`) {
-      let resSql = `INSERT INTO response(questionID, studentID, responseBool) VALUES(?, ?, ?)`;
-      db.run(resSql, [questionRow.questionid, studentID, response], function (err) {
-        if (err) {
-          console.log(`Failed Insert!`);
-        }
-      });
-    } else {
-      let resSql = `INSERT INTO response(questionID, studentID, responseMultiBool) VALUES(?, ?, ?)`;
-      db.run(resSql, [questionRow.questionid, studentID, response], function (err) {
-        if (err) {
-          console.log(`Failed Insert!`);
-        }
-      });
-    }
   }
 }
