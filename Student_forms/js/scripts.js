@@ -50,7 +50,12 @@ submitForm = function(event){
     var completeForm_Object = {
       studID,radBut,sliderValue,checkboxComplete
     }
-    var completeForm = (studID + "," + radBut + "," + sliderValue + "," + checkboxComplete);
+    
+    var path = window.location.pathname;
+    var page = path.split("/").pop();
+    var formname = page.split(".html")[0];
+    console.log( page );
+    var completeForm = (formname + "," + studID + "," + radBut + "," + sliderValue + "," + checkboxComplete);
     PostToServer(completeForm);
 
    

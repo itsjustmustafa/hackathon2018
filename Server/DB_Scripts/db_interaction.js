@@ -1,14 +1,18 @@
 const sqlite3 = require('sqlite3').verbose();
 
-let db = new sqlite3.Database('../hackathon.db', sqlite3.OPEN_READWRITE, (err) => {
+
+
+
+
+let db = new sqlite3.Database('././hackathon.db', sqlite3.OPEN_READWRITE, (err) => {
   if (err) {
     console.error(err.message);
-  }else{
+  } else {
     console.log('Connected to the database.');
   }
 });
 
-function addForm(formData){
+function addForm(formData) {
 
   let splitForm = formData.split(`,`);
   let formName = splitForm[0];
@@ -17,15 +21,15 @@ function addForm(formData){
 
   let sql = `INSERT INTO forms(formName, formPath, formPass) VALUES(?, ?, ?)`;
   let params = [formName, formPath, formPass];
-  db.run(sql, params, function(err){
-    if(err){
+  db.run(sql, params, function (err) {
+    if (err) {
       console.log(err.message);
     }
   });
 
 }
 
-function addQuestion(questionData){
+function addQuestion(questionData) {
 
   let splitQuestion = questionData.split(`,`);
   let formName = splitQuestion[0];
@@ -33,85 +37,30 @@ function addQuestion(questionData){
 
   let sql = `INSERT INTO questions(formID, questionFormID) VALUES(?, ?)`;
   let formSql = `SELECT formID FROM forms WHERE formName = ?`
-  db.get(formSql, [formName], (err, row) =>{
-    if(err){
+  db.get(formSql, [formName], (err, row) => {
+    if (err) {
       console.log(err.message);
     }
   });
 
-  db.run(sql, [row], function(err){
-    if(err){
+  db.run(sql, [row], function (err) {
+    if (err) {
       console.log(`Failed Insert!`);
     }
   });
 
-  function addStudent(studentID){
+  function addStudent(studentID) {
     let sql = `INSERT INTO students(studentID) VALUES(?)`;
-    db.run(sql, [studentID], function(err){
-      if(err){
+    db.run(sql, [studentID], function (err) {
+      if (err) {
         console.log(`Failed Insert!`);
       }
     });
   }
 
-  function addResponse(responseData){
 
-    let splitResponse = responseData.split(`,`);
-    let formName = splitResponse[0];
-    let questionID = splitResponse[1];
-    let questionID = splitResponse[2];
-    let studentID = splitResponse[3];
-    let response = splitResponse[4];
 
-    let stuCheck = `SELECT studentID FROM students WHERE studentID = ?`;
-    db.get(stuCheck, [studentID], (err, stuRow) =>{
-      if(err){
-        console.log(err.message);
-      }
-      if(stuRow != studentID){
-        addStudent(studentID);
-      }
-    });
-
-    let formSql = `SELECT formID FROM forms WHERE formName = ?`;
-    db.get(formSql, [formName], (err, formRow) =>{
-      if(err){
-        console.log(err.message);
-      }
-    });
-
-    let questionSql = `SELECT questionID questionid, questionType questiontype FROM questions WHERE formQuestionID = ? AND formID = ?`;
-    db.get(questionSql, [questionID, formRow], (err, questionRow) =>{
-      if(err){
-        console.log(err.message);
-      }
-    });
-
-    if(questionRow.questiontype == `SCALE`){
-      let resSql = `INSERT INTO response(questionID, studentID, responseScale) VALUES(?, ?, ?)`;
-      db.run(resSql, [questionRow.questionid, studentID, response], function(err){
-        if(err){
-          console.log(`Failed Insert!`);
-        }
-      });
-    }else if(questionRow.questiontype == `BOOL`){
-      let resSql = `INSERT INTO response(questionID, studentID, responseBool) VALUES(?, ?, ?)`;
-      db.run(resSql, [questionRow.questionid, studentID, response], function(err){
-        if(err){
-          console.log(`Failed Insert!`);
-        }
-      });
-    }else{
-      let resSql = `INSERT INTO response(questionID, studentID, responseMultiBool) VALUES(?, ?, ?)`;
-      db.run(resSql, [questionRow.questionid, studentID, response], function(err){
-        if(err){
-          console.log(`Failed Insert!`);
-        }
-      });
-    }
-  }
-
-  function getResponseData(formName){
+  function getResponseData(formName) {
 
     var tempRes = [];
     var questionArray = [];
@@ -123,10 +72,10 @@ function addQuestion(questionData){
                         JOIN forms ON questions.formID = forms.formID
                         WHERE formName = ?`
 
-    db.each(questionSql, [formName], (err, questionRows) =>{
-      if(err){
+    db.each(questionSql, [formName], (err, questionRows) => {
+      if (err) {
         console.log(`Failed getting questions!`);
-      }else{
+      } else {
         let arrayIn = [questionRows.questionFormID, questionRows.questionBal, questionRows.questionMaxVal];
         questionArray.push(arrayIn);
       }
@@ -140,24 +89,24 @@ function addQuestion(questionData){
                     ORDER BY studentID
                     AND questions.questionFormID`;
 
-    db.each(formSql, [formName], (err, resRows)=>{
-      if(err){
+    db.each(formSql, [formName], (err, resRows) => {
+      if (err) {
         console.log(`Failed to extract response information!`);
-      }else{
-        if(lastStudentID == -1){
+      } else {
+        if (lastStudentID == -1) {
           lastStudentID = resRows.studentID;
         }
-        if(lastStudentID != resRows.studentID){
+        if (lastStudentID != resRows.studentID) {
           lastStudentID = resRows.studentID;
           responses.push(tempRes);
           tempRes = [];
           tempRes.push(resRows.studentID);
         }
-        if(resRows.questionType == 'SCALE'){
+        if (resRows.questionType == 'SCALE') {
           tempRes.push(resRows.responseScale);
-        }else if(resRows.questionType == `BOOL`){
+        } else if (resRows.questionType == `BOOL`) {
           tempRes.push(resRows.responseBool);
-        }else if(resRows.questionType == `MULTIBOOL`){
+        } else if (resRows.questionType == `MULTIBOOL`) {
           tempRes.push(resRows.responseMultiBool);
         }
       }
@@ -173,3 +122,72 @@ db.close((err) => {
   }
   console.log('Close the database connection.');
 });
+
+
+module.exports  = {
+  addStudent(studentID) {
+    let sql = `INSERT INTO students(studentID) VALUES(?)`;
+    db.run(sql, [studentID], function (err) {
+      if (err) {
+        console.log(`Failed Insert!`);
+      }
+    });
+  },
+
+  add_Response(responseData) {
+
+    let splitResponse = responseData.split(`,`);
+    let formName = splitResponse[0];
+    let questionID = splitResponse[1];
+    //let questionID = splitResponse[2];
+    let studentID = splitResponse[3];
+    let response = splitResponse[4];
+
+    let stuCheck = `SELECT studentID FROM students WHERE studentID = ?`;
+    db.get(stuCheck, [studentID], (err, stuRow) => {
+      if (err) {
+        console.log(err.message);
+      }
+      if (stuRow != studentID) {
+        this.addStudent(studentID);
+      }
+    });
+
+    let formSql = `SELECT formID FROM forms WHERE formName = ?`;
+    db.get(formSql, [formName], (err, formRow) => {
+      if (err) {
+        console.log(err.message);
+      }
+    });
+
+    let questionSql = `SELECT questionID questionid, questionType questiontype FROM questions WHERE formQuestionID = ? AND formID = ?`;
+    db.get(questionSql, [questionID, formRow], (err, questionRow) => {
+      if (err) {
+        console.log(err.message);
+      }
+    });
+
+    if (questionRow.questiontype == `SCALE`) {
+      let resSql = `INSERT INTO response(questionID, studentID, responseScale) VALUES(?, ?, ?)`;
+      db.run(resSql, [questionRow.questionid, studentID, response], function (err) {
+        if (err) {
+          console.log(`Failed Insert!`);
+        }
+      });
+    } else if (questionRow.questiontype == `BOOL`) {
+      let resSql = `INSERT INTO response(questionID, studentID, responseBool) VALUES(?, ?, ?)`;
+      db.run(resSql, [questionRow.questionid, studentID, response], function (err) {
+        if (err) {
+          console.log(`Failed Insert!`);
+        }
+      });
+    } else {
+      let resSql = `INSERT INTO response(questionID, studentID, responseMultiBool) VALUES(?, ?, ?)`;
+      db.run(resSql, [questionRow.questionid, studentID, response], function (err) {
+        if (err) {
+          console.log(`Failed Insert!`);
+        }
+      });
+    }
+  }
+}
