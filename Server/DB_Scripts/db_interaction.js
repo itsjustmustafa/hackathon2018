@@ -86,7 +86,7 @@ module.exports  = {
       }
     });
 
-    let questionSql = `SELECT questionID questionid, questionType questiontype, questionMaxVal 
+    let questionSql = `SELECT questionID questionid, questionType questiontype, questionMaxVal
                          FROM questions
                          JOIN forms ON questions.formID = forms.formID
                          WHERE formName = ?`;
@@ -112,11 +112,12 @@ module.exports  = {
         resLoc += 1;
       } else {
         let resSql = `INSERT INTO responses(questionID, studentID, responseMultiBool) VALUES(?, ?, ?)`;
-        let multiResponse = [];
+        let fullResponse = ``;
         for(var i = resLoc; i < resLoc + questionRow.questionMaxVal; i++){
-          multiResponse.push(response[i])
+          fullResponse += response[i].toString() + `,`;
         }
-        db.run(resSql, [questionRow.questionid, studentID, multiResponse], function (err) {
+
+        db.run(resSql, [questionRow.questionid, studentID, fullResponse], function (err) {
           if (err) {
             console.log(err.message);
           }
