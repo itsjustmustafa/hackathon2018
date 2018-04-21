@@ -10,6 +10,12 @@
 </head>
 <body>
     <div id="questions">
+        <p>Enter your student number:</p>
+        <div id="studentNumber">
+            <input v-model="studentID">
+         <p>Message is: {{ studentID }}</p>
+        </div>
+        
         <p>Do you like web development?</p>
         <div class="radioButton">
             <input type="radio" id="yes" value="Yes" v-model="yesOrNo">
@@ -25,17 +31,17 @@
 
         <p>Which of these languages do you know?</p>
         <div class="checkBox">
-            <input type="checkbox" id="checkOne" value="CheckOne" v-model="checkedAnswers">
+            <input type="checkbox" id="checkOne" value="CheckOne" v-model="checkedResponses">
             <label for="checkOne">Python</label>
-            <input type="checkbox" id="checkTwo" value="CheckTwo" v-model="checkedAnswers">
+            <input type="checkbox" id="checkTwo" value="CheckTwo" v-model="checkedResponses">
             <label for="checkOne">Java</label>
-            <input type="checkbox" id="checkThree" value="CheckThree" v-model="checkedAnswers">
+            <input type="checkbox" id="checkThree" value="CheckThree" v-model="checkedResponses">
             <label for="checkOne">JavaScript</label>
-            <input type="checkbox" id="checkFour" value="CheckFour" v-model="checkedAnswers">
+            <input type="checkbox" id="checkFour" value="CheckFour" v-model="checkedResponses">
             <label for="checkOne">C#</label>
-            <input type="checkbox" id="checkFive" value="CheckFive" v-model="checkedAnswers">
+            <input type="checkbox" id="checkFive" value="CheckFive" v-model="checkedResponses">
             <label for="checkOne">C++</label>
-            <!--<p>Answers checked: {{ checkedAnswers }}</p> -->
+            <!--<p>Answers checked: {{ checkedResponses }}</p> -->
         </div>
 
         <div class="submitButton">
