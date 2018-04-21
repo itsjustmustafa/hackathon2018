@@ -13,16 +13,16 @@
     <div id="questions">
         <form>
         <p>Enter your student number:</p>
-        <div id="studentNumber">
-            <input v-model="studentID">
+        <div class="studentNumber">
+            <input v-model="studentID" value="studentID">
          <p>Message is: {{ studentID }}</p>
         </div>
 
         <p>Do you like web development?</p>
         <div class="radioButton question">
-            <input type="radio" id="yes" value="Yes" v-model="yesOrNo">
+            <input type="radio" class="yes" value="Yes" v-model="yesOrNo">
             <label for="yes">Yes</label>
-            <input type="radio" id="no" value="No" v-model="yesOrNo">
+            <input type="radio" class="no" value="No" v-model="yesOrNo">
             <label for="no">No</label>
         </div>
 
