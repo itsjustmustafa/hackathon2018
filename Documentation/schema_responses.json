@@ -1,0 +1,16 @@
+{    
+    "Responses": 
+    [
+        {
+            "StudentID" : "12902298",
+            "Schema": "2220",
+            "Answers" :
+            {
+              "0" : ["5"],
+              "1" : ["TRUE","FALSE"],
+              "2" : ["TRUE","FALSE","FALSE"],
+              "3" : ["TRUE","FALSE","FALSE"]
+            }
+        }
+    ]
+}
