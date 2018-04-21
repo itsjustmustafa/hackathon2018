@@ -9,12 +9,68 @@
     <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> -->
     <script src="https://unpkg.com/vue"></script>
     <script src="js/scripts.js"></script>
+    <style>
+        html {
+            background-color: #f1f1f1!important;
+        }
+
+        body {
+            margin-left: 5%;
+            padding-left: 5%;
+            padding-right: 5%;
+            width: 80%;
+            background-color: #f1f1f1!important;
+            padding-top: 5px;
+        }
+
+        
+
+        button {
+            
+            margin-bottom: 15px;
+            background-color: rgb(0, 121, 191);
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            margin: 1rem;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: rgb(100, 121, 191);
+        }
+
+        button:active {
+            background-color: rgb(100, 0, 191);
+        }
+
+        .studentNumber {
+            margin-top: 1% !important;
+        }
+
+        .question,
+        .studentNumber {
+            background: #fff;
+            color: black;
+            border-radius: 2px;
+            margin: 1rem;
+            padding-left: 5%;
+            padding-right: 5%;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+        }
+    </style>
 </head>
+
 <body onload="main()">
+    
     <div id="questions">
         <form>
-            <p>Enter your student number:</p>
+
             <div class="studentNumber">
+                <p>Enter your student number:</p>
                 <input v-model="studentID" value="studentID">
                 <p>Message is: {{ studentID }}</p>
             </div>
