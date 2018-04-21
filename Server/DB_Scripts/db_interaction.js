@@ -189,7 +189,11 @@ module.exports  = {
         } else if (resRows.questionType == `MULTIBOOL`) {
           let responseVal = resRows.split(`,`);
           for(var i = 0; i < responseVal.length; i++){
-            tempRes.push(responseVal[i]);
+            if(responseVal[i] == `false`){
+              tempRes.push(0);
+            }else{
+              tempRes.push(1);
+            }
           }
         }
       }
