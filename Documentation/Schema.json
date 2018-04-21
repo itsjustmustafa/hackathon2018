@@ -1,8 +1,9 @@
 {
   "LoginData": [
     {
-      "SessionID": "RANDOMNUM",
-      "Password": "Password"
+      "Session Name":"#",
+      "Password": "Password",
+      "Timeout" : "20"
     }
   ],
   "Questions": [
