@@ -1,6 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
 
-let db = new sqlite3.Database('././hackathon.db', sqlite3.OPEN_READWRITE, (err) => {
+let db = new sqlite3.Database('hackathon.db', sqlite3.OPEN_READWRITE, (err) => {
   if (err) {
     console.error(err.message);
   } else {
@@ -132,73 +132,84 @@ module.exports  = {
   },
 
   getResponseData(formName) {
-
-    var tempRes = [];
-    var questionArray = [];
-    var responses = [];
-    var lastStudentID = -1;
-    var offset = 0;
-
-    let questionSql = `SELECT questionFormID, questionBal, questionMaxVal, questionType
-                        FROM questions
-                        JOIN forms ON questions.formID = forms.formID
-                        WHERE formName = ?`
-
-    db.each(questionSql, [formName], (err, questionRows) => {
-      if (err) {
-        console.log(`Failed getting questions!`);
-      } else {
-        if(questionRows.questionType != `MULTIBOOL`){
-          let arrayIn = [questionRows.questionFormID + offset, questionRows.questionBal, questionRows.questionMaxVal];
-          questionArray.push(arrayIn);
-        }else{
-          for(var i = 0; i < questionRows.questionMaxVal; i++){
-            let arrayIn = [questionRows.questionFormID + offset + i, questionRows.questionBal, 1];
+    return new Promise(function(resolve, reject) {
+      var tempRes = [];
+      var questionArray = [];
+      var responses = [];
+      var lastStudentID = -1;
+      var offset = 0;
+  
+      let questionSql = `SELECT questionFormID, questionBal, questionMaxVal, questionType
+                          FROM questions
+                          JOIN forms ON questions.formID = forms.formID
+                          WHERE formName = ?`
+  
+      db.each(questionSql, [formName], (err, questionRows) => {
+        if (err) {
+          reject(err)
+          console.log(`Failed getting questions!`);
+        } else {
+          if(questionRows.questionType != `MULTIBOOL`){
+            let arrayIn = [questionRows.questionFormID + offset, questionRows.questionBal, questionRows.questionMaxVal];
             questionArray.push(arrayIn);
+          }else{
+            for(var i = 0; i < questionRows.questionMaxVal; i++){
+              let arrayIn = [questionRows.questionFormID + offset + i, questionRows.questionBal, 1];
+              questionArray.push(arrayIn);
+            }
+            offset += questionRows.questionMaxVal;
           }
-          offset += questionRows.questionMaxVal;
         }
-      }
-    });
+      });
+      responses.push(questionArray);
+      let formSql = `SELECT studentID, questionType, responseScale, responseBool, responseMultiBool
+                      FROM responses
+                      JOIN questions ON responses.questionID = questions.questionID
+                      JOIN forms ON questions.formID = forms.formID
+                      WHERE forms.formName = ?
+                      ORDER BY studentID
+                      AND questions.questionFormID`;
+      var count = 0;
+      var newcount = 0;
+      db.each(formSql, [formName], (err, resRows) => {
+        count += 1;
+      });
 
-    let formSql = `SELECT studentID, questionType, responseScale, responseBool, responseMultiBool
-                    FROM responses
-                    JOIN questions ON responses.questionID = questions.questionID
-                    JOIN forms ON questions.formID = forms.formID
-                    WHERE forms.formName = ?
-                    ORDER BY studentID
-                    AND questions.questionFormID`;
-
-    db.each(formSql, [formName], (err, resRows) => {
-      if (err) {
-        console.log(`Failed to extract response information!`);
-      } else {
-        if (lastStudentID == -1) {
-          lastStudentID = resRows.studentID;
-        }
-        if (lastStudentID != resRows.studentID) {
-          lastStudentID = resRows.studentID;
-          responses.push(tempRes);
-          tempRes = [];
-          tempRes.push(resRows.studentID);
-        }
-        if (resRows.questionType == 'SCALE') {
-          tempRes.push(resRows.responseScale);
-        } else if (resRows.questionType == `BOOL`) {
-          tempRes.push(resRows.responseBool);
-        } else if (resRows.questionType == `MULTIBOOL`) {
-          let responseVal = resRows.split(`,`);
-          for(var i = 0; i < responseVal.length; i++){
-            if(responseVal[i] == `false`){
-              tempRes.push(0);
-            }else{
-              tempRes.push(1);
+      db.each(formSql, [formName], (err, resRows) => {
+        if (err) {
+          reject(err);
+          console.log(`Failed to extract response information!`);
+        } else {
+          newcount += 1;
+          
+          if (lastStudentID != resRows.studentID) {
+            lastStudentID = resRows.studentID;
+            responses.push(tempRes);
+            tempRes = [];
+            tempRes.push(resRows.studentID);
+          }
+          if (resRows.questionType == 'SCALE') {
+            tempRes.push(resRows.responseScale);
+          } else if (resRows.questionType == `BOOL`) {
+            tempRes.push(resRows.responseBool);
+          } else if (resRows.questionType == `MULTIBOOL`) {
+            let responseVal = resRows.responseMultiBool.split(`,`);
+            for(var i = 0; i < responseVal.length; i++){
+              if(responseVal[i] == `false`){
+                tempRes.push(0);
+              }else{
+                tempRes.push(1);
+              }
             }
           }
         }
-      }
-    });
-    responses.push(questionArray);
-    return responses;
+        if (newcount === count){
+          console.log(formSql);
+          resolve(responses)
+        }
+      });
+      
+      
+    })
   }
 }
