@@ -14,3 +14,7 @@ let session;
       session = location.href.split('?')[1];
     }
   }
+
+  main = function(){
+    document.getElementsByClassName("question")
+  }
