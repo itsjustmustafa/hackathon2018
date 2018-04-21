@@ -46,18 +46,13 @@ submitForm = function(event){
 
     var checkboxComplete = (checkBoxOne + ", " + checkBoxTwo + ", " + checkBoxThree + ", " + checkBoxFour + ", " + checkBoxFive)
 
-<<<<<<< HEAD
     var completeForm = (studID + "," + radBut + "," + sliderValue + "," + checkboxComplete);
     var completeForm_Object = {
       studID,radBut,sliderValue,checkboxComplete
     }
 
     PostToServer(completeForm);
-=======
-    var completeForm = (studID + ", " + radBut + ", " + sliderValue + ", " + checkboxComplete);
-    
-    //this is the final result - turn to a http posts
->>>>>>> cb5a189edef17cfc16af7ace0da67f914f1560d6
+
     console.log(completeForm);
 }
 
