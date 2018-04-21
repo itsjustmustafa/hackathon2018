@@ -8,7 +8,12 @@ let db = new sqlite3.Database('../hackathon.db', sqlite3.OPEN_READWRITE, (err) =
   }
 });
 
-function addForm(formName, formPath, formPass){
+function addForm(formData){
+
+  let splitForm = formData.split(`,`);
+  let formName = splitForm[0];
+  let formPath = splitForm[1];
+  let formPass = splitForm[2];
 
   let sql = `INSERT INTO forms(formName, formPath, formPass) VALUES(?, ?, ?)`;
   let params = [formName, formPath, formPass];
@@ -20,7 +25,12 @@ function addForm(formName, formPath, formPass){
 
 }
 
-function addQuestion(formName, questionID){
+function addQuestion(questionData){
+
+  let splitQuestion = questionData.split(`,`);
+  let formName = splitQuestion[0];
+  let questionID = splitQuestion[1];
+
   let sql = `INSERT INTO questions(formID, questionFormID) VALUES(?, ?)`;
   let formSql = `SELECT formID FROM forms WHERE formName = ?`
   db.get(formSql, [formName], (err, row) =>{
@@ -44,7 +54,14 @@ function addQuestion(formName, questionID){
     });
   }
 
-  function addResponse(formName, questionID, studentID, response){
+  function addResponse(responseData){
+
+    let splitResponse = responseData.split(`,`);
+    let formName = splitResponse[0];
+    let questionID = splitResponse[1];
+    let questionID = splitResponse[2];
+    let studentID = splitResponse[3];
+    let response = splitResponse[4];
 
     let stuCheck = `SELECT studentID FROM students WHERE studentID = ?`;
     db.get(stuCheck, [studentID], (err, stuRow) =>{
