@@ -1,3 +1,5 @@
+
+
 let session;
   window.onload = function(){
     session = null;
@@ -8,6 +10,19 @@ let session;
 
   main = function(){
     document.getElementById('questions').getElementsByTagName('button')[0].addEventListener("submit", submitForm, false);
+}
+function PostToServer (content)
+{
+  var url = "http://127.0.0.1";
+  var method = "POST"
+  var request = new XMLHttpRequest(); 
+  request.onload = function () {
+    var status = request.status;
+    var data = request.responseText; 
+ }
+ request.open(method,url,true);
+ request.setRequestHeader("Content-Type","text/plain;charset=UTF-8");
+ request.send(content);
 }
 
 submitForm = function(event){
@@ -31,10 +46,19 @@ submitForm = function(event){
 
     var checkboxComplete = (checkBoxOne + ", " + checkBoxTwo + ", " + checkBoxThree + ", " + checkBoxFour + ", " + checkBoxFive)
 
+    var completeForm = (studID + "," + radBut + "," + sliderValue + "," + checkboxComplete);
+    var completeForm_Object = {
+      studID,radBut,sliderValue,checkboxComplete
+    }
+
+    PostToServer(completeForm);
+
     var completeForm = (studID + ", " + radBut + ", " + sliderValue + ", " + checkboxComplete);
     //this is the final result - turn to a http posts
     console.log(completeForm);
 }
+
+
 
 //spoof data - 100 random responses
 var randomResponses = [];
