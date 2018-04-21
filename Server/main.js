@@ -1,13 +1,13 @@
 var http = require("http");
 var fs = require('fs');
-
+var url = require('url');
 
 function ReadFile_Or_Text(filename, text, response)
 {
     fs.readFile(filename, function (err, data) {
         response.writeHead(404, { 'Content-Type': 'text/html' });
         if (err) {
-            return response.end("404 Not Found");
+            return response.end(text);
         }
         response.write(data);
         return res.end();
@@ -22,7 +22,7 @@ function ReadFile_OR_DefaultFile_OR_Text(Requested_Filename, Default_Filename, r
         }
         response.writeHead(200, { 'Content-Type': 'text/html' });
         response.write(data);
-        return res.end();
+        return response.end();
     });
 }
 
@@ -30,10 +30,9 @@ function ReadFile_OR_DefaultFile_OR_Text(Requested_Filename, Default_Filename, r
 
 http.createServer(function (request, response) {
     response.writeHead(200, { 'Content-Type': 'text/plain' });
-    requested_filename = "public/" + request.pathname;
-    var content = ReadFile_OR_DefaultFile_OR_Text(requested_filename,"404.html",response);
-    response.write(content);
-    response.end('Hello World\n');
+    var requested_filename = "Server/public" + request.url;
+    
+    response = ReadFile_OR_DefaultFile_OR_Text(requested_filename,"404.html",response);
 }).listen(8081);
 
 // Console will print the message
