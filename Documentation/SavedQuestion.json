@@ -1,0 +1,33 @@
+{
+    "Questions": 
+    [
+      {
+        "Id": 0,
+        "Question": "This text is displayed to the user",
+        "Magnitude": 1,
+        "Responses":[0,1,2,3,4,6,7,8,9],
+        "Aim_To_Match":true,
+        "Type":"SCALE",
+        "ResponseType":"Scale"
+    },
+      {
+        "Id": 1,
+        "Question": "Can you work in a team",
+        "Magnitude": 1,
+        "Responses":["Yes","No"],
+        "Aim_To_Match":true,
+        "Type":"RADIO",
+        "ResponseType":"Bool"
+      },
+      {
+        "Id": 2,
+        "Question": "Which languages do you know",
+        "Magnitude": 1,
+        "Responses":["C++","Java","C#"],
+        "Aim_To_Match":false,
+        "Type":"CHECKBOX",
+        "ResponseType":"MultiBool"
+      }
+    ]
+  }
+  
