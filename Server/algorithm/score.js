@@ -15,7 +15,6 @@ module.exports = {
                 } else {
                     expected = 1 - group_stats[i];
                 }
-                tot_score += 1 - Math.abs(expected - norm_val);
 
             } else if (schema[i][1] == false) {
                 if (schema[i][2] == 1) {
@@ -23,8 +22,8 @@ module.exports = {
                 } else {
                     expected = group_stats[i];
                 }
-                tot_score += Math.abs(expected - norm_val);
             }
+            tot_score += Math.abs(expected - norm_val);
         }
         return (tot_score);
     },
